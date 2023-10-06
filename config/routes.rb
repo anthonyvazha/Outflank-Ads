@@ -11,6 +11,10 @@ Rails.application.routes.draw do
   match '/billing_portal' => 'billing_portal#create', via: [:get]
   match '/cancel' => 'billing_portal#destroy', via: [:get]
 
+  resources :brands, only:[:create]
+  resources :competitors
+  resources :ads
+
   # static pages
   pages = %w(
     privacy terms

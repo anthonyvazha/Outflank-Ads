@@ -1,6 +1,6 @@
-<header class="py-4 px-2" data-controller="header">
-  <nav class="flex items-center justify-between flex-wrap">
-    <div class="flex items-center flex-no-shrink text-white mr-6">
+<header class="py-4 px-2 bg-gray-900" data-controller="header">
+  <nav class="flex items-center justify-between flex-wrap ">
+    <div class="bg-gray-900 flex items-center flex-no-shrink text-white mr-6">
       <% logo_path = current_user ? dashboard_index_path : root_path %>
       <%= link_to logo_path do %>
         <%= image_tag "avatar.png",  style: "max-height: 42px" %>

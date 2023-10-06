@@ -1,5 +1,5 @@
-# OutflankAds
-a Rails 7 boilerplate template by [@ryanckulp](https://twitter.com/ryanckulp), created to ship SaaS apps quickly. Learn how to use this at [24 Hour MVP](https://founderhacker.com/24-hour-mvp).
+# Outflank Ads
+Don't blend in with your competition. Get a weekly breakdown of competitor's FB ads and how you can position your brand ads to set yourself apart.
 
 features:
 * user authentication via [Devise](https://github.com/plataformatec/devise)
