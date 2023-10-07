@@ -1,3 +1,5 @@
 web: bin/rails server -p 3000
+redis: redis-server
 css: bin/rails tailwindcss:watch
-worker: bundle exec rake delayed:work
+worker: bundle exec sidekiq
+

@@ -1,6 +1,8 @@
 class BrandsController < ApplicationController
     before_action :authenticate_user!, except: [:new, :create]
   
+
+  
     def new
       @brand = Brand.new
       3.times { @brand.competitors.build }
@@ -12,6 +14,7 @@ class BrandsController < ApplicationController
       @brand = current_user.brands.build(brand_params)
       
       if @brand.save
+        ScrapeJob.perform_later(@brand.id)
         redirect_to dashboard_index_path, notice: "Created a new account, currently retrieving data"
       else
         render :new

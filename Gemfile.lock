@@ -106,9 +106,6 @@ GEM
     debug (1.8.0)
       irb (>= 1.5.0)
       reline (>= 0.3.1)
-    delayed (0.5.0)
-      activerecord (>= 5.2)
-      concurrent-ruby
     devise (4.9.2)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -265,6 +262,11 @@ GEM
       activesupport (>= 3)
     shoulda-matchers (5.3.0)
       activesupport (>= 5.2.0)
+    sidekiq (7.1.5)
+      concurrent-ruby (< 2)
+      connection_pool (>= 2.3.0)
+      rack (>= 2.2.4)
+      redis-client (>= 0.14.0)
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
@@ -290,6 +292,9 @@ GEM
       concurrent-ruby (~> 1.0)
     warden (1.2.9)
       rack (>= 2.0.9)
+    watir (7.2.2)
+      regexp_parser (>= 1.2, < 3)
+      selenium-webdriver (~> 4.2)
     web-console (4.2.1)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
@@ -317,7 +322,6 @@ DEPENDENCIES
   capybara
   chartkick
   debug
-  delayed
   devise
   factory_bot_rails
   faker
@@ -339,12 +343,14 @@ DEPENDENCIES
   selenium-webdriver
   shoulda-callback-matchers
   shoulda-matchers
+  sidekiq
   sprockets-rails
   stimulus-rails
   stripe
   tailwindcss-rails
   turbo-rails
   tzinfo-data
+  watir
   web-console
   webdrivers
 

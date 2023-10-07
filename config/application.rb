@@ -23,7 +23,7 @@ module OutflankAds
     end
 
     # background jobs
-    config.active_job.queue_adapter = :delayed
+    config.active_job.queue_adapter = :sidekiq
 
     # mailers via postmark
     config.action_mailer.default_url_options = { host: ENV['BASE_URL'] }

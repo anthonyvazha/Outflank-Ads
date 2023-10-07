@@ -1,2 +1,2 @@
-worker: bundle exec rake delayed:work
+worker: bundle exec sidekiq
 release: rails db:migrate

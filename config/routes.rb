@@ -28,6 +28,10 @@ Rails.application.routes.draw do
   authenticated :user, -> user { user.admin? } do
     namespace :admin do
       resources :dashboard, only: [:index]
+      if defined?(Sidekiq)
+        require 'sidekiq/web'
+        mount Sidekiq::Web => '/sidekiq'
+      end
       resources :impersonations, only: [:new]
       resources :users, only: [:edit, :update, :destroy]
     end
