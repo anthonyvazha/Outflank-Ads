@@ -24,6 +24,15 @@ gem 'stripe'
 gem 'chartkick'
 gem 'groupdate' # used by Chartkick
 gem 'sidekiq'
+gem 'webdrivers'
+gem 'date'
+gem 'selenium-webdriver'
+gem 'pry'
+gem 'uri'
+gem 'cgi'
+
+
+
  
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -44,8 +53,6 @@ end
 
 group :test do
   gem 'capybara'
-  gem 'selenium-webdriver'
-  gem 'webdrivers'
   gem 'rspec-rails'
   gem 'factory_bot_rails'
   gem 'shoulda-callback-matchers'

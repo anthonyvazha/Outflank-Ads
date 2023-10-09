@@ -14,7 +14,12 @@ class BrandsController < ApplicationController
       @brand = current_user.brands.build(brand_params)
       
       if @brand.save
-        ScrapeJob.perform_later(@brand.id)
+        ScrapeJob.perform_async(@brand.id)
+
+        @brand.competitors.each do |competitor|
+          CompetitorScrapeJob.perform_async(competitor.id) 
+        end
+
         redirect_to dashboard_index_path, notice: "Created a new account, currently retrieving data"
       else
         render :new
