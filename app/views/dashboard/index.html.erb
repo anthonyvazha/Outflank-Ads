@@ -1,9 +1,22 @@
 <%= render partial: "shared/heading", locals: { title: 'Dashboard', description: '' } %>
 
+<style>
+  .active {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  
+  .inactive {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+</style>
+
 
 <div class="bg-gray-900 px-6 py-10 sm:py-16 lg:px-8 mx-auto max-w-2xl text-center">
   <ul role="list" class="-mb-8">
-    <li>
+    <li class="inactive">
       <div class="relative pb-8">
         <span class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
         <div class="relative flex space-x-3">
@@ -16,7 +29,7 @@
           </div>
           <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
             <div>
-              <p class="text-sm text-gray-500">Applied to <a href="#" class="font-medium text-gray-900">Front End Developer</a></p>
+              <p class="text-sm text-gray-500">Starting up ... <a href="#" class="font-medium text-gray-900">Front End Developer</a></p>
             </div>
             <div class="whitespace-nowrap text-right text-sm text-gray-500">
               <time datetime="2020-09-20">Sep 20</time>
@@ -38,7 +51,7 @@
           </div>
           <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
             <div>
-              <p class="text-sm text-gray-500">Advanced to phone screening by <a href="#" class="font-medium text-gray-900">Bethany Blake</a></p>
+              <p class="text-sm text-gray-500"> Colleting your ads from facebook ad library <a href="#" class="font-medium text-gray-900">Bethany Blake</a></p>
             </div>
             <div class="whitespace-nowrap text-right text-sm text-gray-500">
               <time datetime="2020-09-22">Sep 22</time>
@@ -60,7 +73,7 @@
           </div>
           <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
             <div>
-              <p class="text-sm text-gray-500">Completed phone screening with <a href="#" class="font-medium text-gray-900">Martha Gardner</a></p>
+              <p class="text-sm text-gray-500">Completed <a href="#" class="font-medium text-gray-900">Martha Gardner</a></p>
             </div>
             <div class="whitespace-nowrap text-right text-sm text-gray-500">
               <time datetime="2020-09-28">Sep 28</time>
@@ -82,7 +95,7 @@
           </div>
           <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
             <div>
-              <p class="text-sm text-gray-500">Advanced to interview by <a href="#" class="font-medium text-gray-900">Bethany Blake</a></p>
+              <p class="text-sm text-gray-500"> Collecting your competitors ads from facebook ad library <a href="#" class="font-medium text-gray-900">Bethany Blake</a></p>
             </div>
             <div class="whitespace-nowrap text-right text-sm text-gray-500">
               <time datetime="2020-09-30">Sep 30</time>
@@ -103,7 +116,7 @@
           </div>
           <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
             <div>
-              <p class="text-sm text-gray-500">Completed interview with <a href="#" class="font-medium text-gray-900">Katherine Snyder</a></p>
+              <p class="text-sm text-gray-500">Completed <a href="#" class="font-medium text-gray-900"></a></p>
             </div>
             <div class="whitespace-nowrap text-right text-sm text-gray-500">
               <time datetime="2020-10-04">Oct 4</time>
@@ -127,8 +140,40 @@
       </svg>
     </div>
   </div>
-  <p class="mt-2 text-sm text-red-600" id="email-error">Not a valid email address.</p>
+  <p class="mt-2 text-sm text-red-600" id="email-error">Enter Your Email to See the Results </p>
 </div>
 
   <% end %>
 </div>
+
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const steps = document.querySelectorAll('.flow-root ul li');
+    let progress = 0;  // Assume this variable changes as progress is made
+    
+    function updateProgress() {
+      steps.forEach((step, index) => {
+        if(index <= progress) {
+          step.classList.remove('inactive');
+          step.classList.add('active');
+        } else {
+          step.classList.remove('active');
+          step.classList.add('inactive');
+        }
+      });
+    }
+    
+    // Call this function whenever the progress changes
+    updateProgress();
+    
+    // Example: Increment progress and update steps every 2 seconds
+    setInterval(() => {
+      if(progress < steps.length - 1) {
+        progress++;
+        updateProgress();
+      }
+    }, 2000);
+  });
+</script>

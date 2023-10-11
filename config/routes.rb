@@ -14,15 +14,18 @@ Rails.application.routes.draw do
   resources :brands, only:[:create]
   resources :competitors
   resources :ads
+  resources :newsletters
 
   # static pages
   pages = %w(
-    privacy terms
+    privacy terms 
   )
 
   pages.each do |page|
     get "/#{page}", to: "pages##{page}", as: "#{page.gsub('-', '_')}"
   end
+
+  # get 'scraper-status', to: 'pages#scraper_status'
 
   # admin panels
   authenticated :user, -> user { user.admin? } do

@@ -30,6 +30,7 @@ gem 'selenium-webdriver'
 gem 'pry'
 gem 'uri'
 gem 'cgi'
+gem "ruby-openai"
 
 
 
