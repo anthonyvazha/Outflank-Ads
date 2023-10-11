@@ -1,29 +1,19 @@
 class DataScraper
-    attr_accessor :brand, :browser
+    attr_accessor :company, :user, :browser
 
-    def initialize 
-  
-    end
-
-    def name_of_brand(url)
-        browser = Watir::Browser.new(:chrome, headless: true)
-        #url = "https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=US&view_all_page_id=162352551085006&sort_data[direction]=desc&sort_data[mode]=relevancy_monthly_grouped&search_type=page&media_type=all"
-        browser.goto(url)
-        sleep(5)
-        name_classes = 'x8t9es0 x1ldc4aq x1xlr1w8 x1cgboj8 x4hq6eo xq9mrsl x1yc453h x1h4wwuj xeuugli'
-        name = browser.div(class: name_classes).text 
-        name
+    def initialize(company)
+        @company = company
+        @user = @company.user
+        @browser = new_browser
     end
   
-    def scrape(url, brand)
-        browser = Watir::Browser.new(:chrome, headless: true)
-        browser.goto(url)
+    def scrape
+        # browser = Watir::Browser.new(:chrome, headless: true)
+        browser.goto(company.ad_libary_url_facebook)
         
         all_ads = []
         max_scrolls = 1
         current_scroll = 0
-
-    
 
         while current_scroll < max_scrolls
             # sleep(3) # give facebook time to load the ads async in the container below the fold
@@ -31,8 +21,8 @@ class DataScraper
             exact_ad_class_divs = browser.divs(css: 'div[class="xh8yej3"]')
             
             name_classes = 'x8t9es0 x1ldc4aq x1xlr1w8 x1cgboj8 x4hq6eo xq9mrsl x1yc453h x1h4wwuj xeuugli'
-            brand_name = browser.div(class: name_classes).text
-            brand.update(name: brand_name) 
+            company_name = browser.div(class: name_classes).text
+            company.update(name: company_name) 
 
             exact_ad_class_divs.each do |div|
                 current_ad = {}
@@ -56,22 +46,19 @@ class DataScraper
                 # Extract video information
                 div.videos.each do |video|
                     if video.exists?
-                    puts "Video SRC: #{video.src}"
-                    puts "Poster: #{video.poster}"
                     current_ad["creatives"] = {ad_type:'video',src:  video.src, poster: video.poster}
                     end
                 end 
                 # Extract image information
                 div.imgs.each do |img|
                     if img.exists? && !img.attribute_value('referrerpolicy').nil?
-                    puts "Creative: #{img.src}"
+                    
                     current_ad["creatives"] = {ad_type:'image' , src: img.src }
                     end
                 end
                 
                 all_ads << current_ad
             end
-            
             # Scroll down
             browser.scroll.to :bottom
             # Increment scroll count
@@ -79,78 +66,41 @@ class DataScraper
             # Pause to allow content to load
             sleep 1
         end
-
         
-        
-        puts all_ads
         # clean ads using library id - 
         cleaned_ads = all_ads.select { |ad| ad.any? && ad["library_id"] }
         # Output
         browser.close
-        save_ads_database(cleaned_ads, brand)
+        save_ads_database(cleaned_ads)
+        OpenAIProcessingJob.perform_async(company) if user.ready_for_ai?
+
         cleaned_ads
     end
 
-    def save_ads_database(all_ads, brand)
+    private
+
+    def save_ads_database(all_ads)
         puts "reached the save_ads_database"
-       
-        # all_ads.each do |scraped_ad|
-        #   ad_attributes = {
-        #     headline: scraped_ad["headline"],
-        #     body: scraped_ad["body"],
-        #     description: scraped_ad["description"],
-        #     cta: scraped_ad["cta"],
-        #     launch_date: scraped_ad["launch_date"],
-        #     external_library_id: scraped_ad["library_id"].to_s, # Ensure it's a string
-        #     brand_id: brand.id,
-        #     source: 'Facebook'
-        #     # Todo:  attributes...(creatives)
-        #   }
-        #   puts scraped_ad
-        #   Ad.create(ad_attributes)
-        # end
 
-        if brand.brand_id.present?
-            all_ads.each do |scraped_ad|
-                ad_attributes = {
-                  headline: scraped_ad["headline"],
-                  body: scraped_ad["body"],
-                  description: scraped_ad["description"],
-                  cta: scraped_ad["cta"],
-                  launch_date: scraped_ad["launch_date"],
-                  external_library_id: scraped_ad["library_id"].to_s, 
-                  source: 'Facebook',
-                  competitor_id: brand.id
-                  # Todo:  attributes...(creatives)
-                }
-                puts scraped_ad
-                Ad.create(ad_attributes)
-              end
-            
-        else
-            all_ads.each do |scraped_ad|
-                ad_attributes = {
-                  headline: scraped_ad["headline"],
-                  body: scraped_ad["body"],
-                  description: scraped_ad["description"],
-                  cta: scraped_ad["cta"],
-                  launch_date: scraped_ad["launch_date"],
-                  external_library_id: scraped_ad["library_id"].to_s, # Ensure it's a string
-                  brand_id: brand.id,
-                  source: 'Facebook'
-                  # Todo:  attributes...(creatives)
-                }
-                puts scraped_ad
-                Ad.create(ad_attributes)
-              end
-            
-        end
+        all_ads.each do |scraped_ad|
+            ad_attributes = {
+              headline: scraped_ad["headline"],
+              body: scraped_ad["body"],
+              description: scraped_ad["description"],
+              cta: scraped_ad["cta"],
+              launch_date: scraped_ad["launch_date"],
+              external_library_id: scraped_ad["library_id"].to_s, 
+              source: 'Facebook',
+              # Todo:  attributes...(creatives)
+            }
+            if @company.company_type == "competitor"
+                ad_attributes = ad_attributes.merge(brand_id: @company.brand_id)
+            end
+            Ad.create(ad_attributes.merge("#{@company.company_type}_id" => @company.id))
+          end
+    end
 
+    def new_browser
+        Watir::Browser.new(:chrome, headless: true)
     end
-  
-    def test
-        url = "https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=US&view_all_page_id=162352551085006&sort_data[direction]=desc&sort_data[mode]=relevancy_monthly_grouped&search_type=page&media_type=all"
-        scrape(url)
-    end
-  
   end

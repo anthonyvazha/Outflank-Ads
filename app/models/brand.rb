@@ -1,4 +1,6 @@
 class Brand < ApplicationRecord
+  include Companyable
+  
   belongs_to :user
   has_many :competitors
   has_many :ads
