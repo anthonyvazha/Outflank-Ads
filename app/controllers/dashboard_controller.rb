@@ -1,9 +1,13 @@
 class DashboardController < ApplicationController
+  include TimeHelper
   before_action :authenticate_user!
   before_action :set_flashes
 
   def index
+    @newsletters = current_user.newsletters.order(created_at: :desc)
   end
+
+  
 
   private
 

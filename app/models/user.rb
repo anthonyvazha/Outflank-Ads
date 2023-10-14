@@ -11,7 +11,9 @@ class User < ApplicationRecord
   has_many :ads, through: :competitors
 
   def ready_for_ai?
-    enriched_companies = brands.map(&:enriched?) + competitors.map(&:enriched?)
-    enriched_companies.uniq == [true] && ads.count.positive?
+    # enriched_companies = brands.map(&:enriched?) + competitors.map(&:enriched?)
+    # enriched_companies.uniq == [true] && ads.count.positive?
+    competitors.all?(&:enriched?) && brands.all?(&:enriched?) && competitors.first.ads.count.positive?
  end
+ 
 end

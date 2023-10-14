@@ -21,7 +21,7 @@ class DataScraper
             exact_ad_class_divs = browser.divs(css: 'div[class="xh8yej3"]')
             
             name_classes = 'x8t9es0 x1ldc4aq x1xlr1w8 x1cgboj8 x4hq6eo xq9mrsl x1yc453h x1h4wwuj xeuugli'
-            company_name = browser.div(class: name_classes).text
+            company_name = browser.div(class: name_classes).text.gsub("\n", "")
             company.update(name: company_name) 
 
             exact_ad_class_divs.each do |div|
@@ -35,12 +35,12 @@ class DataScraper
                     cta = div.div(class: "_8jgz _8jg_").div(class: "x8t9es0 x1fvot60 xxio538 x1heor9g xuxw1ft x6ikm8r x10wlt62 xlyipyv x1h4wwuj x1pd3egz xeuugli")
                     launch_date = div.div(class: ['x1cy8zhl', 'x78zum5', 'xyamay9', 'x1pi30zi', 'x18d9i69', 'x1swvt13', 'x1n2onr6'])
                     
-                    current_ad["headline"] = headline.exists? ? headline.text : nil
-                    current_ad["description"] = description.exists? ? description.text : nil
-                    current_ad["body"] = body.exists? ? body.text : nil
+                    current_ad["headline"] = headline.exists? ? headline.text.gsub("\n", "") : nil
+                    current_ad["description"] = description.exists? ? description.text.gsub("\n", "") : nil
+                    current_ad["body"] = body.exists? ? body.text.gsub("\n", "") : nil
                     current_ad["status"] = status.text
                     current_ad['library_id'] = library_id.text.gsub("Library ID: ", "").to_i
-                    current_ad["cta"] = cta.exists? ? cta.text : nil
+                    current_ad["cta"] = cta.exists? ? cta.text.gsub("\n", "") : nil
                     current_ad["launch_date"] = Date.parse(launch_date.text.match(/Started running on (.+)/)[1]).iso8601
                 end
                 # Extract video information
@@ -72,15 +72,19 @@ class DataScraper
         # Output
         browser.close
         save_ads_database(cleaned_ads)
-        OpenAIProcessingJob.perform_async(company) if user.ready_for_ai?
-
+        puts 'reached OpenAI Processing Job in Ad Scraper'
+        
+        if user.ready_for_ai?
+            puts 'Inside the if statment'
+            OpenAiProcessingJob.perform_sync(user.id)
+        end
         cleaned_ads
     end
 
     private
 
     def save_ads_database(all_ads)
-        puts "reached the save_ads_database"
+        
 
         all_ads.each do |scraped_ad|
             ad_attributes = {
@@ -91,11 +95,11 @@ class DataScraper
               launch_date: scraped_ad["launch_date"],
               external_library_id: scraped_ad["library_id"].to_s, 
               source: 'Facebook',
+              data:scraped_ad["creatives"] ,
               # Todo:  attributes...(creatives)
             }
-            if @company.company_type == "competitor"
-                ad_attributes = ad_attributes.merge(brand_id: @company.brand_id)
-            end
+        
+            
             Ad.create(ad_attributes.merge("#{@company.company_type}_id" => @company.id))
           end
     end

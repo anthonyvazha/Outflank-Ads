@@ -4,6 +4,7 @@ class Brand < ApplicationRecord
   belongs_to :user
   has_many :competitors
   has_many :ads
+  has_many :newsletters
   accepts_nested_attributes_for :competitors, 
   reject_if: proc { |attributes| attributes['ad_libary_url_facebook'].blank? }, 
   allow_destroy: true

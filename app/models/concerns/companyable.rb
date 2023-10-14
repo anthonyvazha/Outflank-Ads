@@ -7,7 +7,7 @@ module Companyable
 
     # TODO: beef this up with more strict criterion for being considered 'enriched'
     def enriched?
-        name # && logo # && ads.count.positive? # possible a company wont have any ads
+        name && ads.count.positive? # && logo # && ads.count.positive? # possible a company wont have any ads
     end
 end
 

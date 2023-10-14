@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+.active-text {
+  /* Add your desired styles here */
+  color: white; /* Example: change the text color to red */
+  font-weight: bold; /* Example: make the text bold */
+  /* Add any other desired styles */
+}
+
+
 .speedrail-tooltip {
   display: none;
   position: absolute;

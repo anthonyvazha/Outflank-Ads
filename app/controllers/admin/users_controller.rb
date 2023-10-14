@@ -3,11 +3,17 @@ class Admin::UsersController < ApplicationController
   before_action :set_user
 
   def edit
+    @user = current_user
   end
 
   def update
     @user.update(user_params)
     redirect_to edit_admin_user_path(id: @user.id), notice: 'User updated successfully.'
+  end
+
+  def newsletter_update
+    @user.update(user_params)
+    redirect_to newsletters_path(id: @user.id), notice: 'User updated successfully.'
   end
 
   def destroy

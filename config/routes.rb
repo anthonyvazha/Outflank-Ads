@@ -25,7 +25,7 @@ Rails.application.routes.draw do
     get "/#{page}", to: "pages##{page}", as: "#{page.gsub('-', '_')}"
   end
 
-  # get 'scraper-status', to: 'pages#scraper_status'
+  get '/scraper_status', to: 'pages#scraper_status', as: 'scraper_status'
 
   # admin panels
   authenticated :user, -> user { user.admin? } do

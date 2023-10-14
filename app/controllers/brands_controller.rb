@@ -20,7 +20,7 @@ class BrandsController < ApplicationController
           AdScraperJob.perform_async('competitor', competitor.id) 
         end
 
-        redirect_to dashboard_index_path, notice: "Created a new account, currently retrieving data"
+        redirect_to scraper_status_path, notice: "Created a new account, currently retrieving data"
       else
         render :new
       end

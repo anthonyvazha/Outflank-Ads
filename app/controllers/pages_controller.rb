@@ -15,9 +15,16 @@ class PagesController < ApplicationController
     render "pages/#{@page_key}"
   end
 
-  # def scraper_status
-  #   companies_enriched = current_user.competitors.map(&:enriched?) # => [true, true, true]
-  #   ads_enriched = current_user.ads.count.positive?
-  #   render json: { enriched: !enriched.include?(false) && ads_enriched }
-  # end
+  def scraper_status
+    companies_enriched = current_user.competitors.map(&:enriched?) # => [true, true, true]
+    ads_enriched = current_user.ads.count.positive?
+    newsletters_enriched  = current_user.newsletters.count.positive?
+    @status = !companies_enriched.include?(false) && ads_enriched && newsletters_enriched
+    #render json: { enriched: !companies_enriched.include?(false) && ads_enriched }
+    
+    respond_to do |format|
+      format.html { }
+      format.json { render json: { status: @status } }
+    end
+  end
 end
